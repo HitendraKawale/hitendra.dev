@@ -18,6 +18,6 @@ const localAdmin = () => ({
 
 export default defineConfig({
   output: 'static',
-  site: 'https://hitendrakawale.github.io',
+  site: 'https://hitendra.dev',
   integrations: [localAdmin()],
 });

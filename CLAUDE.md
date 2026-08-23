@@ -14,7 +14,11 @@ No lint or test commands exist.
 
 ## Vercel deployment
 
-Static output — no adapter needed. Push to GitHub, import the repo in Vercel, and it auto-detects Astro. Build command: `npm run build`, output dir: `dist`. A `vercel.json` exists at the root confirming these settings.
+Live at **https://hitendra.dev**, hosted on Vercel — pushes to `main` deploy automatically.
+
+Static output, no adapter needed. `vercel.json` pins `buildCommand: npm run build` and `outputDirectory: dist`; Astro is auto-detected otherwise. The domain was bought through Vercel, so Vercel is registrar and nameserver both — there are no DNS records to hand-manage and TLS renews itself.
+
+`site` in `astro.config.mjs` must stay in sync with the live domain: `BaseLayout` resolves every page's `<link rel="canonical">` and `og:url` against it, so a stale value silently points the whole site's canonicals at the wrong host.
 
 ## Architecture
 

@@ -1,8 +1,8 @@
 # My Portfolio
 
-Personal portfolio of **me** — Live at [hitendrakawale.github.io](https://hitendrakawale.github.io).
+Personal portfolio of **me** — Live at [hitendra.dev](https://hitendra.dev).
 
-Built with [Astro 6](https://astro.build). Pushes to `main` auto-deploy via GitHub Actions.
+Built with [Astro 6](https://astro.build). Pushes to `main` auto-deploy via Vercel.
 
 ```sh
 npm install

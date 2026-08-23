@@ -26,6 +26,10 @@ const links = [
 ];
 
 const year = new Date().getFullYear();
+
+// This page owns its <head>, so it declares its own canonical
+// rather than inheriting BaseLayout's.
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
 ---
 
 <!doctype html>
@@ -34,6 +38,7 @@ const year = new Date().getFullYear();
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Hitendra Kawale in one screen — AI engineer working in audio & NLP, LLM platforms, and RAG pipelines." />
+    <link rel="canonical" href={canonical} />
     <title>TL;DR — Hitendra Kawale</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

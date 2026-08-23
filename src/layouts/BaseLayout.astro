@@ -15,6 +15,10 @@ const { title, description } = Astro.props;
 // The homepage hides its scrollbar — it reads as one uninterrupted
 // opening. Inner pages keep theirs as a reading-position cue.
 const isHome = Astro.url.pathname === "/";
+
+// Resolved against `site` in astro.config. One declared home per page, so
+// older copies on other hosts never compete with the real domain.
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
 ---
 
 <!doctype html>
@@ -24,7 +28,9 @@ const isHome = Astro.url.pathname === "/";
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta name="twitter:card" content="summary" />
