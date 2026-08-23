@@ -8,9 +8,11 @@ import AshCanvas from "../components/AshCanvas.astro";
 interface Props {
   title: string;
   description: string;
+  /** Short blurb for social cards. Falls back to a trimmed `description`. */
+  cardDescription?: string;
 }
 
-const { title, description } = Astro.props;
+const { title, description, cardDescription } = Astro.props;
 
 // The homepage hides its scrollbar — it reads as one uninterrupted
 // opening. Inner pages keep theirs as a reading-position cue.
@@ -19,6 +21,15 @@ const isHome = Astro.url.pathname === "/";
 // Resolved against `site` in astro.config. One declared home per page, so
 // older copies on other hosts never compete with the real domain.
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL("/og.png", Astro.site).href;
+
+// LinkedIn and the rest cut card text around 150 characters — a full
+// description gets sliced mid-word. Trim on a word boundary instead.
+const card =
+  cardDescription ??
+  (description.length > 150
+    ? description.slice(0, 147).replace(/\s+\S*$/, "") + "…"
+    : description);
 ---
 
 <!doctype html>
@@ -32,8 +43,16 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
     <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:description" content={card} />
+    <meta property="og:site_name" content="Hitendra Kawale" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Hitendra Kawale — AI Engineer. hitendra.dev"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="theme-color" content="#0a0806" />
     <title>{title}</title>
 

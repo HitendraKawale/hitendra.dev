@@ -30,6 +30,7 @@ const year = new Date().getFullYear();
 // This page owns its <head>, so it declares its own canonical
 // rather than inheriting BaseLayout's.
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL("/og.png", Astro.site).href;
 ---
 
 <!doctype html>
@@ -39,6 +40,18 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Hitendra Kawale in one screen — AI engineer working in audio & NLP, LLM platforms, and RAG pipelines." />
     <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content="TL;DR — Hitendra Kawale" />
+    <meta
+      property="og:description"
+      content="Hitendra Kawale in one screen — AI engineer working in audio & NLP, LLM platforms, and RAG pipelines."
+    />
+    <meta property="og:site_name" content="Hitendra Kawale" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
     <title>TL;DR — Hitendra Kawale</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
