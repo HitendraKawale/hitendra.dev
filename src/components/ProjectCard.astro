@@ -1,170 +1,31 @@
 ---
-// A panel in the volume. Ink border, screentone cap, engraved plate number.
 import type { Project } from "../data/projects";
-
-interface Props {
-  project: Project;
-  index: number;
-  wide?: boolean;
-}
-
-const { project, index, wide = false } = Astro.props;
-const plate = String(index).padStart(2, "0");
+interface Props { project: Project; expanded?: boolean; }
+const { project, expanded = false } = Astro.props;
 ---
-
-<article
-  class:list={["panel", { wide }]}
-  data-reveal="rise"
-  style={`--d:${(index % 3) * 90}ms`}
->
-  <div class="panel-cap tone">
-    <span class="plate">Plate {plate}</span>
-    <span class:list={["state", project.status.toLowerCase().replace(" ", "-")]}>{project.status}</span>
-  </div>
-
-  <div class="panel-body">
-    <span class="hatch" aria-hidden="true"></span>
-
-    <header class="panel-head">
-      <h3>{project.title}</h3>
-      <p class="sub">{project.subtitle}</p>
-    </header>
-
-    <p class="desc">{project.description}</p>
-
-    <ul class="stack">
-      {project.stack.map(t => <li>{t}</li>)}
-    </ul>
-
-    {project.href ? (
-      <a class="go" href={project.href} target="_blank" rel="noreferrer">
-        <span class="blade">Open the work</span>
-        <span class="go-arrow" aria-hidden="true">↗</span>
-      </a>
-    ) : (
-      <span class="go go-sealed">Sealed — dissertation work</span>
-    )}
-  </div>
+<article class="project" data-project>
+  <header>
+    <h3>{project.title}</h3>
+    <span class="meta">{project.status}</span>
+  </header>
+  <p class="subtitle">{project.subtitle}</p>
+  <ul class="stack" aria-label="Technologies">{project.stack.map(item => <li>{item}</li>)}</ul>
+  {expanded ? <p class="description">{project.description}</p> : (
+    <details>
+      <summary>Details <span class="sr-only">for {project.title}</span></summary>
+      <p class="description">{project.description}</p>
+    </details>
+  )}
+  {project.href && <a class="source" href={project.href}>View project<span class="sr-only">: {project.title}</span></a>}
 </article>
-
 <style>
-  .panel {
-    display: flex;
-    flex-direction: column;
-    background: var(--soot);
-    border: 1px solid var(--line);
-    position: relative;
-    transition: border-color 340ms var(--ease), transform 340ms var(--ease), box-shadow 340ms var(--ease);
-  }
-
-  .panel:hover {
-    border-color: var(--blood);
-    transform: translate(-2px, -3px);
-    box-shadow: 8px 10px 0 0 var(--pitch);
-  }
-
-  .panel.wide { grid-column: span 2; }
-
-  .panel-cap {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 9px 14px;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .plate, .state {
-    font-family: var(--mono);
-    font-size: var(--t-micro);
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-  }
-
-  .plate { color: var(--brass-dim); }
-
-  .state { color: var(--ash-dim); }
-  .state.built       { color: var(--bone); }
-  .state.research    { color: var(--brass); }
-  .state.in-progress { color: var(--blood-hi); }
-
-  .panel-body {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding: clamp(20px, 2.6vw, 30px);
-    flex: 1;
-    color: var(--ash-dim); /* drives the hatch */
-  }
-
-  .panel-body > :not(.hatch) { position: relative; z-index: 1; }
-
-  h3 {
-    font-family: var(--display);
-    font-weight: 700;
-    font-size: clamp(1.35rem, 2.4vw, 1.9rem);
-    line-height: 1.1;
-    letter-spacing: -0.015em;
-    color: var(--bone);
-    transition: color 300ms;
-  }
-
-  .panel:hover h3 { color: var(--blood-hi); }
-
-  .sub {
-    font-family: var(--mono);
-    font-size: var(--t-xs);
-    letter-spacing: 0.04em;
-    color: var(--brass-dim);
-    margin-top: 8px;
-    line-height: 1.5;
-  }
-
-  .desc {
-    font-size: var(--t-sm);
-    line-height: 1.75;
-    color: var(--ash);
-    flex: 1;
-  }
-
-  .stack {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-  }
-
-  .stack li {
-    font-family: var(--mono);
-    font-size: var(--t-micro);
-    letter-spacing: 0.08em;
-    padding: 4px 9px;
-    border: 1px solid var(--line);
-    color: var(--ash);
-    background: var(--soot-2);
-  }
-
-  .go {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    width: fit-content;
-    font-family: var(--mono);
-    font-size: var(--t-micro);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--bone);
-    transition: color 220ms;
-  }
-
-  .go:hover { color: var(--blood-hi); }
-
-  .go-arrow { transition: transform 300ms var(--ease); }
-  .go:hover .go-arrow { transform: translate(3px, -3px); }
-
-  .go-sealed { color: var(--ash-dim); cursor: default; }
-
-  @media (max-width: 900px) {
-    .panel.wide { grid-column: span 1; }
-  }
+  .project { padding-block: 28px; border-top: 1px solid var(--border); }
+  header { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px 20px; }
+  .subtitle { margin-top: 8px; color: var(--muted); }
+  .stack { margin-top: 12px; }
+  .description { margin-top: 16px; max-width: 78ch; }
+  details { margin-top: 12px; }
+  summary { cursor: pointer; color: var(--accent); min-height: 44px; padding-block: 8px; width: fit-content; }
+  .source { display: inline-flex; align-items: center; min-height: 44px; margin-top: 8px; font-size: .875rem; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 </style>

@@ -1,86 +1,12 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Brand from "../components/Brand.astro";
 ---
-
-<BaseLayout
-  title="Lost the road — Hitendra Kawale"
-  description="This page doesn't exist."
->
-  <section class="lost">
-    <div class="wrap lost-inner">
-      <div class="chapter-cap" data-reveal="rise">
-        <Brand size={13} />
-        <span class="label label-blood">Error 404</span>
-        <span class="rule"></span>
-      </div>
-
-      <h1 data-reveal="rise">Lost<br />the road</h1>
-
-      <p data-reveal="rise" style="--d:200ms">
-        Nothing lives at this address. The page was never written, or it was
-        carried off somewhere else.
-      </p>
-
-      <div class="lost-links" data-reveal="rise" style="--d:300ms">
-        <a href="/" class="blade">Back to the start</a>
-        <a href="/projects" class="blade">The armoury</a>
-        <a href="/blog" class="blade">The chronicles</a>
-      </div>
-    </div>
+<BaseLayout title="Page not found | Hitendra Kawale" description="This page doesn't exist. Find Hitendra Kawale's projects, writing, and contact details.">
+  <section class="section">
+    <p class="meta">404</p>
+    <h1>Page not found</h1>
+    <p class="message">This address doesn't point to a page. Try one of these instead.</p>
+    <div class="actions"><a href="/">Home</a><a href="/projects">Projects</a><a href="/blog">Writing</a></div>
   </section>
 </BaseLayout>
-
-<style>
-  .lost {
-    display: flex;
-    align-items: center;
-    min-height: calc(100vh - var(--nav-h) - 200px);
-    padding-block: clamp(60px, 12vw, 140px);
-  }
-
-  .lost-inner { width: 100%; }
-
-  .chapter-cap {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding-bottom: clamp(28px, 5vw, 48px);
-  }
-
-  h1 {
-    font-family: var(--display);
-    font-weight: 900;
-    font-size: var(--t-xxl);
-    line-height: 0.88;
-    letter-spacing: -0.035em;
-    text-transform: uppercase;
-    color: transparent;
-    -webkit-text-stroke: 1px var(--bone);
-  }
-
-  .lost p {
-    font-size: var(--t-md);
-    color: var(--ash);
-    max-width: 44ch;
-    margin-top: 28px;
-  }
-
-  .lost-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: clamp(18px, 3vw, 34px);
-    margin-top: 36px;
-  }
-
-  .lost-links a {
-    font-family: var(--mono);
-    font-size: var(--t-micro);
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--ash);
-    transition: color 220ms;
-  }
-
-  .lost-links a:hover { color: var(--brass); }
-</style>
+<style>.message { margin-top: 24px; color: var(--muted); }</style>

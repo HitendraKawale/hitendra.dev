@@ -1,414 +1,73 @@
-/* ============================================================
-   THE CHRONICLE — design system
-   A bound volume: engraved type, ink panels, gold leaf, blood.
-   Two states: the Golden Age (default) and the Eclipse.
-   ============================================================ */
-
 :root {
-  /* ── Ground ─────────────────────────────── */
-  --void:      #0a0806;   /* page ground — warm near-black */
-  --pitch:     #000000;   /* panel borders, gutters */
-  --soot:      #12100c;   /* panel fill */
-  --soot-2:    #1a1611;   /* elevated fill */
-
-  /* ── Ink ────────────────────────────────── */
-  --bone:      #ece4d4;   /* primary text — aged paper */
-  --ash:       #8a8175;   /* secondary text */
-  --ash-dim:   #5d574e;   /* tertiary / hairline text */
-  --line:      #2a2419;   /* hairlines */
-
-  /* ── Blood ──────────────────────────────── */
-  --blood:     #93171b;
-  --blood-hi:  #cf3520;
-
-  /* ── Gold leaf ──────────────────────────── */
-  --brass:     #c8a24a;
-  --brass-dim: #7d6528;
-
-  /* ── Parchment (the pasted-in page) ─────── */
-  --paper:     #e4dac2;
-  --paper-2:   #d6cbb0;
-  --paper-ink: #14110c;
-
-  --green:     #4ea36a;
-
-  /* ── Type ───────────────────────────────── */
-  --display: 'Bodoni Moda', 'Didot', 'Bodoni MT', 'Playfair Display', serif;
-  --body:    'Spectral', 'Iowan Old Style', Georgia, serif;
-  --mono:    'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
-  --han:     'Noto Serif SC', 'STSong', 'SimSun', serif;
-
-  /* Fluid scale */
-  --t-hero:  clamp(2.7rem, 10.2vw, 8.4rem);
-  --t-xxl:   clamp(2.4rem, 7.5vw, 5.6rem);
-  --t-xl:    clamp(1.9rem, 4.6vw, 3.4rem);
-  --t-lg:    clamp(1.35rem, 2.6vw, 2rem);
-  --t-md:    1.0625rem;
-  --t-sm:    0.9375rem;
-  --t-xs:    0.75rem;
-  --t-micro: 0.625rem;
-
-  /* ── Metrics ────────────────────────────── */
-  --nav-h:  68px;
-  --rail-w: 68px;
-  --gutter: clamp(20px, 5vw, 64px);
-  --measure: 1180px;
-
-  --ease: cubic-bezier(0.22, 0.75, 0.2, 1);
-
-  /* Eclipse-only knobs, inert by default */
-  --veil-opacity: 0;
-  --hatch-opacity: 0.05;
-  --grain: 0.045;
+  color-scheme: light;
+  --bg: #fafaf8;
+  --surface: #fff;
+  --surface-2: #f0f2f4;
+  --text: #20252b;
+  --ink: var(--text);
+  --muted: #59636e;
+  --accent: #315d8a;
+  --accent-hi: #23466b;
+  --border: #d7dce1;
+  --body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --heading: var(--body);
+  --mono: ui-monospace, SFMono-Regular, monospace;
 }
-
-/* ── THE ECLIPSE ──────────────────────────────
-   Sacrifice made. The sun turns black, the ink
-   floods crimson, the gold catches fire.        */
-:root[data-eclipse] {
-  --void:      #170406;
-  --pitch:     #000000;
-  --soot:      #240709;
-  --soot-2:    #320b0e;
-
-  --bone:      #fbe0d2;
-  --ash:       #bd8578;
-  --ash-dim:   #8c574d;
-  --line:      #56171b;
-
-  --blood:     #d51d20;
-  --blood-hi:  #ff5233;
-
-  --brass:     #f5cf6d;
-  --brass-dim: #a8822f;
-
-  --paper:     #c9a98d;
-  --paper-2:   #b08d70;
-  --paper-ink: #240805;
-
-  --green:     #d1743a;
-
-  --veil-opacity: 1;
-  --hatch-opacity: 0.15;
-  --grain: 0.08;
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #151719;
+  --surface: #1e2125;
+  --surface-2: #282d33;
+  --text: #edf0f2;
+  --muted: #a7b0bc;
+  --accent: #8db9e3;
+  --accent-hi: #bed9f2;
+  --border: #454d57;
 }
-
-/* ============================================================
-   RESET
-   ============================================================ */
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-html {
-  background: var(--void);
-  color: var(--bone);
-  font-family: var(--body);
-  font-size: 16px;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  transition: background-color 700ms var(--ease), color 700ms var(--ease);
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 17px/1.65 var(--body); -webkit-font-smoothing: antialiased; }
+body { min-height: 100vh; display: flex; flex-direction: column; }
+main { flex: 1; min-width: 0; }
+h1, h2, h3, p, ul, dl { margin: 0; }
+h1, h2, h3 { font-family: var(--heading); line-height: 1.2; font-weight: 600; letter-spacing: -.035em; text-wrap: balance; }
+h1 { font-size: clamp(2rem, 4vw, 3.25rem); max-width: 24ch; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.2rem; }
+a { color: var(--accent); text-underline-offset: .25em; text-decoration-thickness: 1px; transition: color 160ms; overflow-wrap: anywhere; }
+a:hover { color: var(--accent-hi); }
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+button, .button { color: var(--accent); background: transparent; border: 1px solid var(--accent); border-radius: 5px; padding: 9px 15px; min-height: 44px; font-size: .875rem; }
+button:hover, .button:hover { background: var(--surface-2); }
+button[hidden], [hidden] { display: none !important; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+img, svg { max-width: 100%; height: auto; }
+::selection { background: var(--accent); color: var(--bg); }
+.wrap { width: 100%; max-width: 1040px; margin-inline: auto; padding-inline: 24px; }
+.section { padding-block: 72px; }
+.section + .section { border-top: 1px solid var(--border); }
+.page-head { padding-block: 64px 40px; }
+.page-head p { max-width: 64ch; margin-top: 20px; color: var(--muted); }
+.section-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 12px 24px; margin-bottom: 24px; }
+.section-head a, .actions a { display: inline-flex; align-items: center; min-height: 44px; }
+.actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 24px; margin-top: 24px; }
+.button { display: inline-flex; align-items: center; text-decoration: none; }
+.muted, .meta { color: var(--muted); }
+.meta { font-size: .875rem; }
+.stack { display: flex; flex-wrap: wrap; gap: 6px 14px; padding: 0; list-style: none; color: var(--muted); font-size: .875rem; }
+.copy-status { display: block; min-height: 1.65em; margin-top: 8px; font-size: .875rem; color: var(--muted); }
+.skip-link { position: absolute; left: 24px; top: 8px; transform: translateY(-160%); padding: 10px 16px; background: var(--surface); z-index: 10; }
+.skip-link:focus { transform: none; }
+@media (max-width: 640px) {
+  .section { padding-block: 48px; }
+  .page-head { padding-block: 40px 32px; }
 }
-
-/* Lenis drives the scroll instead — native smooth behaviour fights it.
-   When Lenis is off (reduced motion, or before it boots), the browser
-   falls back to its own smooth scrolling for anchor jumps. */
-html:not(.lenis) { scroll-behavior: smooth; }
-
-html.lenis, html.lenis body { height: auto; }
-.lenis.lenis-smooth { scroll-behavior: auto !important; }
-.lenis.lenis-stopped { overflow: hidden; }
-
-body {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow-x: hidden;
-  position: relative;
-}
-
-a { color: inherit; text-decoration: none; }
-img, svg { display: block; max-width: 100%; }
-button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
-ul, ol { list-style: none; }
-p { line-height: 1.75; }
-
-::selection { background: var(--blood); color: var(--bone); }
-
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: var(--void); }
-::-webkit-scrollbar-thumb { background: var(--blood); }
-
-/* The homepage runs without a scrollbar. Wheel, keyboard, touch and
-   the spine all still scroll it — only the bar itself is hidden. */
-:root[data-home] { scrollbar-width: none; }
-:root[data-home]::-webkit-scrollbar { width: 0; height: 0; display: none; }
-
-:focus-visible {
-  outline: 2px solid var(--brass);
-  outline-offset: 3px;
-}
-
-/* ============================================================
-   ATMOSPHERE — grain, hatching, the veil
-   ============================================================ */
-
-/* Paper grain, always on */
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 9998;
-  opacity: var(--grain);
-  transition: opacity 900ms var(--ease);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* The black sun itself, hanging over every page once the Eclipse has begun */
-.sky {
-  position: fixed;
-  top: -34vmax;
-  left: 50%;
-  width: 84vmax;
-  height: 84vmax;
-  margin-left: -42vmax;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 1400ms var(--ease), visibility 0s linear 1400ms;
-  background: radial-gradient(circle at 42% 40%, #2a0f0c 0%, #140605 44%, #000 72%);
-  box-shadow:
-    0 0 0 2px rgba(255, 82, 51, 0.5),
-    0 0 40px 6px rgba(255, 82, 51, 0.25),
-    0 0 180px 60px rgba(213, 29, 32, 0.25);
-}
-
-:root[data-eclipse] .sky {
-  opacity: 1;
-  visibility: visible;
-  transition: opacity 1400ms var(--ease) 300ms, visibility 0s;
-  animation: skyThrob 9s ease-in-out infinite;
-}
-
-@keyframes skyThrob {
-  0%, 100% { transform: scale(1); }
-  50%      { transform: scale(1.015); }
-}
-
-/* The veil — the sky bleeding, only present in the Eclipse */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  opacity: var(--veil-opacity);
-  transition: opacity 900ms var(--ease);
-  background:
-    radial-gradient(ellipse 95% 60% at 50% -6%, rgba(220, 38, 26, 0.37), transparent 70%),
-    radial-gradient(ellipse 75% 55% at 50% 108%, rgba(140, 14, 18, 0.34), transparent 72%),
-    radial-gradient(ellipse at 50% 50%, transparent 27%, rgba(0, 0, 0, 0.8) 100%);
-}
-
-/* Cross-hatch — engraver's texture for panels */
-.hatch {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: var(--hatch-opacity);
-  background-image:
-    repeating-linear-gradient(45deg, currentColor 0 1px, transparent 1px 6px);
-  transition: opacity 700ms var(--ease);
-}
-
-/* Halftone screentone — manga panel caps */
-.tone {
-  background-color: var(--pitch);
-  background-image: radial-gradient(circle, rgba(236, 228, 212, 0.13) 1px, transparent 1px);
-  background-size: 5px 5px;
-}
-
-/* ============================================================
-   LAYOUT
-   ============================================================ */
-
-.wrap {
-  width: 100%;
-  max-width: var(--measure);
-  margin-inline: auto;
-  padding-inline: var(--gutter);
-}
-
-/* Full-bleed band that still aligns its inner content */
-.bleed { width: 100%; position: relative; }
-
-main { flex: 1; position: relative; z-index: 2; }
-
-/* The spine — a fixed left margin rail, like a book's binding edge */
-@media (min-width: 1080px) {
-  body { padding-left: var(--rail-w); }
-}
-
-/* ============================================================
-   TYPOGRAPHY UTILITIES
-   ============================================================ */
-
-.display {
-  font-family: var(--display);
-  font-weight: 900;
-  font-optical-sizing: auto;
-  line-height: 0.92;
-  letter-spacing: -0.02em;
-}
-
-.serif-lede {
-  font-family: var(--body);
-  font-size: var(--t-md);
-  line-height: 1.8;
-  color: var(--ash);
-}
-
-/* Technical label — mono, tracked wide, uppercase */
-.label {
-  font-family: var(--mono);
-  font-size: var(--t-micro);
-  font-weight: 500;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-}
-
-.label-brass { color: var(--brass); }
-.label-blood { color: var(--blood-hi); }
-.label-ash   { color: var(--ash-dim); }
-
-/* Numerals for chapters / indices */
-.numeral {
-  font-family: var(--mono);
-  font-size: var(--t-xs);
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  color: var(--brass);
-  font-variant-numeric: tabular-nums;
-}
-
-.rule {
-  height: 1px;
-  background: var(--line);
-  border: none;
-  flex: 1;
-}
-
-/* ============================================================
-   REVEALS — two shapes, one mechanism.
-   Elements animate when scrolled into view; the hero uses the
-   same mechanism on load, which gives the entry sequence.
-
-   The observed element must always keep a visible box, or the
-   observer never fires. So "wipe" is declared on the mask, and
-   the line inside it is what actually moves.
-   ============================================================ */
-
-[data-reveal] {
-  opacity: 0;
-  transition:
-    opacity 780ms var(--ease) var(--d, 0ms),
-    transform 900ms var(--ease) var(--d, 0ms);
-  will-change: opacity, transform;
-}
-
-[data-reveal="rise"] { transform: translateY(20px); }
-
-[data-reveal].in {
-  opacity: 1;
-  transform: none;
-}
-
-/* Wipe: the mask stays put, the line rises out of it */
-[data-reveal="wipe"] {
-  opacity: 1;
-  overflow: hidden;
-  transform: none;
-}
-
-[data-reveal="wipe"] > * {
-  display: block;
-  transform: translateY(102%);
-  transition: transform 950ms var(--ease) var(--d, 0ms);
-  will-change: transform;
-}
-
-[data-reveal="wipe"].in > * { transform: none; }
-
-/* ============================================================
-   SHARED COMPONENTS
-   ============================================================ */
-
-/* Section chapter head: numeral · title · rule · link */
-.chapter {
-  display: flex;
-  align-items: baseline;
-  gap: clamp(14px, 2.5vw, 26px);
-  padding-bottom: 18px;
-}
-
-.chapter-title {
-  font-family: var(--display);
-  font-weight: 700;
-  font-size: var(--t-lg);
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-}
-
-.chapter-link {
-  font-family: var(--mono);
-  font-size: var(--t-micro);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--ash-dim);
-  white-space: nowrap;
-  transition: color 200ms;
-}
-
-.chapter-link:hover { color: var(--brass); }
-
-/* Blade link — underline draws from the left on hover */
-.blade {
-  position: relative;
-  display: inline-block;
-  padding-bottom: 4px;
-}
-
-.blade::after {
-  content: '';
-  position: absolute;
-  left: 0; bottom: 0;
-  width: 100%; height: 1px;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: right center;
-  transition: transform 380ms var(--ease);
-}
-
-.blade:hover::after,
-.blade:focus-visible::after {
-  transform: scaleX(1);
-  transform-origin: left center;
-}
-
-/* ============================================================
-   MOTION PREFERENCES
-   ============================================================ */
-
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-
-  *, *::before, *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-  }
-
-  [data-reveal] { opacity: 1; transform: none; clip-path: none; }
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+@media print {
+  :root, :root[data-theme="dark"] { --bg: #fff; --text: #000; --muted: #444; --accent: #23466b; --border: #ccc; }
+  body > header, body > footer, .skip-link, button, .copy-status { display: none !important; }
+  .section { padding-block: 20px; }
+  a { text-decoration: none; }
 }

@@ -1,161 +1,22 @@
 ---
 import type { CollectionEntry } from "astro:content";
-
-interface Props {
-  post: CollectionEntry<"blog">;
-  index?: number;
-}
-
-const { post, index = 0 } = Astro.props;
-
-const d = new Date(post.data.date);
-const day = new Intl.DateTimeFormat("en-GB", { day: "2-digit" }).format(d);
-const month = new Intl.DateTimeFormat("en-GB", { month: "short" }).format(d).toUpperCase();
-const year = d.getFullYear();
+interface Props { post: CollectionEntry<"blog">; }
+const { post } = Astro.props;
+const date = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(post.data.date);
 ---
-
-<a class="entry" href={`/blog/${post.id}`} data-reveal="rise" style={`--d:${index * 70}ms`}>
-  <time class="entry-date" datetime={d.toISOString()}>
-    <span class="d-day">{day}</span>
-    <span class="d-mon">{month}</span>
-    <span class="d-yr">{year}</span>
-  </time>
-
-  <div class="entry-main">
-    <h3>{post.data.title}</h3>
+<article class="entry">
+  <time class="meta" datetime={post.data.date.toISOString()}>{date}</time>
+  <div>
+    <h3><a href={`/blog/${post.id}`}>{post.data.title}</a></h3>
     <p>{post.data.description}</p>
-    {post.data.tags && post.data.tags.length > 0 && (
-      <ul class="entry-tags">
-        {post.data.tags.slice(0, 3).map(t => <li>{t}</li>)}
-      </ul>
-    )}
+    {post.data.tags.length > 0 && <ul class="stack">{post.data.tags.map(tag => <li>{tag}</li>)}</ul>}
   </div>
-
-  <span class="entry-read" aria-hidden="true">Read <span class="arrow">→</span></span>
-</a>
-
+</article>
 <style>
-  .entry {
-    display: grid;
-    grid-template-columns: 92px 1fr auto;
-    gap: clamp(16px, 3vw, 40px);
-    align-items: start;
-    padding: clamp(22px, 3vw, 34px) 0;
-    border-bottom: 1px solid var(--line);
-    position: relative;
-    isolation: isolate;
-  }
-
-  .entry::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 1px;
-    background: var(--blood-hi);
-    transform: scaleY(0);
-    transform-origin: top center;
-    transition: transform 420ms var(--ease);
-  }
-
-  .entry:hover::before { transform: scaleY(1); }
-
-  /* ── Date stamp ────────────────────── */
-  .entry-date {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding-top: 6px;
-    font-family: var(--mono);
-    font-variant-numeric: tabular-nums;
-    transition: transform 420ms var(--ease);
-  }
-
-  .entry:hover .entry-date { transform: translateX(8px); }
-
-  .d-day {
-    font-family: var(--display);
-    font-weight: 700;
-    font-size: 1.7rem;
-    line-height: 1;
-    color: var(--brass);
-  }
-
-  .d-mon {
-    font-size: var(--t-micro);
-    letter-spacing: 0.28em;
-    color: var(--ash);
-  }
-
-  .d-yr {
-    font-size: var(--t-micro);
-    letter-spacing: 0.28em;
-    color: var(--ash-dim);
-  }
-
-  /* ── Body ──────────────────────────── */
-  h3 {
-    font-family: var(--display);
-    font-weight: 700;
-    font-size: clamp(1.25rem, 2.8vw, 2rem);
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-    color: var(--bone);
-    transition: color 280ms;
-  }
-
-  .entry:hover h3 { color: var(--blood-hi); }
-
-  .entry-main p {
-    font-size: var(--t-sm);
-    line-height: 1.7;
-    color: var(--ash);
-    margin-top: 8px;
-    max-width: 58ch;
-  }
-
-  .entry-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 14px;
-  }
-
-  .entry-tags li {
-    font-family: var(--mono);
-    font-size: var(--t-micro);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--ash-dim);
-  }
-
-  .entry-tags li::before { content: '· '; color: var(--brass-dim); }
-
-  /* ── Read cue ──────────────────────── */
-  .entry-read {
-    font-family: var(--mono);
-    font-size: var(--t-micro);
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    color: var(--ash-dim);
-    padding-top: 10px;
-    white-space: nowrap;
-    transition: color 280ms;
-  }
-
-  .entry:hover .entry-read { color: var(--bone); }
-
-  .arrow {
-    display: inline-block;
-    transition: transform 320ms var(--ease);
-  }
-
-  .entry:hover .arrow { transform: translateX(5px); }
-
-  @media (max-width: 720px) {
-    .entry { grid-template-columns: 62px 1fr; }
-    .entry-read { display: none; }
-    .d-day { font-size: 1.35rem; }
-  }
+  .entry { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 24px; padding-block: 28px; border-top: 1px solid var(--border); }
+  time { padding-top: 8px; }
+  h3 a { display: inline-block; padding-block: 8px; min-height: 44px; }
+  p { margin-top: 8px; max-width: 65ch; color: var(--muted); }
+  .stack { margin-top: 12px; }
+  @media (max-width: 600px) { .entry { grid-template-columns: 1fr; gap: 8px; } }
 </style>

@@ -1,111 +1,21 @@
 ---
-import Brand from "./Brand.astro";
 import { profile } from "../data/profile";
-const year = new Date().getFullYear();
 ---
-
-<footer class="footer">
-  <div class="colophon wrap">
-    <div class="colophon-mark">
-      <Brand size={26} />
-    </div>
-    <blockquote class="colophon-text">
-      In this world, is the destiny of mankind controlled by some transcendental
-      entity or law? At least it is true that man has no control, even over his own will.
-    </blockquote>
-    <cite class="label label-blood">Berserk — Volume 1</cite>
-  </div>
-
-  <div class="footer-bar">
-    <div class="wrap footer-inner">
-      <span class="foot-copy">{profile.name} · MMXXVI · Struggler</span>
-
-      <ul class="foot-links">
-        <li><a href={profile.github} target="_blank" rel="noreferrer" class="blade">GitHub</a></li>
-        {profile.codeberg && (
-          <li><a href={profile.codeberg} target="_blank" rel="noreferrer" class="blade">Codeberg</a></li>
-        )}
-        {profile.linkedin && (
-          <li><a href={profile.linkedin} target="_blank" rel="noreferrer" class="blade">LinkedIn</a></li>
-        )}
-        <li><a href={`mailto:${profile.email}`} class="blade">Email</a></li>
-        <li><a href={profile.resume} download="Hitendra-Kawale-Resume.pdf" class="blade">Resume</a></li>
-        <li><a href="/tldr" class="blade">TL;DR</a></li>
-      </ul>
-
-      <span class="foot-year">{year}</span>
-    </div>
+<footer>
+  <div class="wrap footer-inner">
+    <span>© {new Date().getFullYear()} {profile.name}</span>
+    <ul aria-label="Elsewhere">
+      <li><a href={`mailto:${profile.email}`}>Email</a></li>
+      <li><a href={profile.github}>GitHub</a></li>
+      {profile.codeberg && <li><a href={profile.codeberg}>Codeberg</a></li>}
+      {profile.linkedin && <li><a href={profile.linkedin}>LinkedIn</a></li>}
+      <li><a href="/tldr">Quick profile</a></li>
+    </ul>
   </div>
 </footer>
-
 <style>
-  .footer {
-    margin-top: auto;
-    border-top: 1px solid var(--line);
-    position: relative;
-    z-index: 2;
-  }
-
-  .colophon {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    padding: clamp(56px, 9vw, 96px) var(--gutter);
-    text-align: center;
-  }
-
-  .colophon-mark { opacity: 0.7; }
-
-  .colophon-text {
-    font-family: var(--body);
-    font-style: italic;
-    font-size: clamp(1rem, 2vw, 1.3rem);
-    line-height: 1.75;
-    color: var(--ash);
-    max-width: 620px;
-  }
-
-  .footer-bar {
-    border-top: 1px solid var(--line);
-  }
-
-  .footer-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    padding-block: 20px;
-    flex-wrap: wrap;
-  }
-
-  .foot-copy, .foot-year {
-    font-family: var(--mono);
-    font-size: var(--t-micro);
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--ash-dim);
-  }
-
-  .foot-links {
-    display: flex;
-    gap: clamp(14px, 3vw, 28px);
-    flex-wrap: wrap;
-  }
-
-  .foot-links a {
-    font-family: var(--mono);
-    font-size: var(--t-micro);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--ash);
-    transition: color 200ms;
-  }
-
-  .foot-links a:hover { color: var(--brass); }
-
-  @media (max-width: 640px) {
-    .foot-year { display: none; }
-    .footer-inner { justify-content: flex-start; gap: 14px; }
-  }
+  footer { border-top: 1px solid var(--border); color: var(--muted); font-size: .875rem; }
+  .footer-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px 24px; padding-block: 24px; }
+  ul { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 20px; }
+  a { min-height: 44px; display: inline-flex; align-items: center; }
 </style>

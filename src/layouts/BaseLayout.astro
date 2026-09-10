@@ -2,38 +2,21 @@
 import "../styles/global.css";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
-import Rail from "../components/Rail.astro";
-import AshCanvas from "../components/AshCanvas.astro";
 
 interface Props {
   title: string;
   description: string;
-  /** Short blurb for social cards. Falls back to a trimmed `description`. */
   cardDescription?: string;
 }
-
 const { title, description, cardDescription } = Astro.props;
-
-// The homepage hides its scrollbar — it reads as one uninterrupted
-// opening. Inner pages keep theirs as a reading-position cue.
-const isHome = Astro.url.pathname === "/";
-
-// Resolved against `site` in astro.config. One declared home per page, so
-// older copies on other hosts never compete with the real domain.
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL("/og.png", Astro.site).href;
-
-// LinkedIn and the rest cut card text around 150 characters — a full
-// description gets sliced mid-word. Trim on a word boundary instead.
-const card =
-  cardDescription ??
-  (description.length > 150
-    ? description.slice(0, 147).replace(/\s+\S*$/, "") + "…"
-    : description);
+const card = cardDescription ?? (description.length > 150
+  ? description.slice(0, 147).replace(/\s+\S*$/, "") + "…"
+  : description);
 ---
-
 <!doctype html>
-<html lang="en" data-home={isHome ? "" : undefined}>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -48,480 +31,64 @@ const card =
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta
-      property="og:image:alt"
-      content="Hitendra Kawale — AI Engineer. hitendra.dev"
-    />
+    <meta property="og:image:alt" content="Hitendra Kawale, AI Engineer. LLM systems, RAG pipelines, and 3D vision. hitendra.dev" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="theme-color" content="#0a0806" />
-    <title>{title}</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..900&family=Spectral:ital,wght@0,300;0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
-    />
-    <!-- Two glyphs only — the name seal -->
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&text=%E6%B3%BD%E8%B4%A4&display=swap"
-    />
+    <meta name="theme-color" content="#fafaf8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-
+    <link rel="alternate icon" href="/favicon.ico" />
+    <title>{title}</title>
     <script is:inline>
-      // Restore the Eclipse before first paint
       try {
-        if (localStorage.getItem("eclipse") === "1") {
-          document.documentElement.setAttribute("data-eclipse", "");
+        if (localStorage.getItem("theme") === "dark") {
+          document.documentElement.dataset.theme = "dark";
+          document.querySelector('meta[name="theme-color"]').content = "#151719";
         }
-      } catch (e) {}
+      } catch {}
     </script>
   </head>
-
   <body>
-    <div class="sky" aria-hidden="true"></div>
-    <AshCanvas />
-    <Rail />
+    <a class="skip-link" href="#content">Skip to content</a>
     <Nav />
-
-    <main>
-      <slot />
-    </main>
-
+    <main id="content" class="wrap" tabindex="-1"><slot /></main>
     <Footer />
-
-    <!-- The Eclipse: the black sun swallowing the page -->
-    <div class="sun" id="sun" aria-hidden="true">
-      <span class="sun-disc"></span>
-      <span class="sun-corona"></span>
-    </div>
-
-    <style is:global>
-      .sun {
-        position: fixed;
-        inset: 0;
-        z-index: 9997;
-        pointer-events: none;
-        display: grid;
-        place-items: center;
-        opacity: 0;
-        visibility: hidden;
-      }
-
-      .sun.firing { opacity: 1; visibility: visible; }
-
-      .sun-disc,
-      .sun-corona {
-        position: absolute;
-        border-radius: 50%;
-        transform: scale(0);
-      }
-
-      .sun-disc {
-        width: 240vmax;
-        height: 240vmax;
-        background: radial-gradient(circle at 38% 32%, #1b0f0c 0%, #0a0605 46%, #000 78%);
-      }
-
-      .sun-corona {
-        width: 240vmax;
-        height: 240vmax;
-        box-shadow:
-          0 0 0 2px rgba(255, 75, 46, 0.85),
-          0 0 90px 30px rgba(207, 53, 32, 0.55);
-      }
-
-      .sun.firing .sun-disc {
-        animation: sunSwallow 1500ms cubic-bezier(0.7, 0, 0.25, 1) forwards;
-      }
-
-      .sun.firing .sun-corona {
-        animation: sunCorona 1500ms cubic-bezier(0.7, 0, 0.25, 1) forwards;
-      }
-
-      @keyframes sunSwallow {
-        0%   { transform: scale(0); opacity: 1; }
-        42%  { transform: scale(1); opacity: 1; }
-        100% { transform: scale(1); opacity: 0; }
-      }
-
-      @keyframes sunCorona {
-        0%   { transform: scale(0); opacity: 0.2; }
-        42%  { transform: scale(1); opacity: 1; }
-        100% { transform: scale(1.04); opacity: 0; }
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        .sun { display: none; }
-      }
-    </style>
-
     <script>
-      // ── THE CHRONICLE — site script ────────────────────────────────
-      // One init(), re-run on every navigation.
-      import Lenis from "lenis";
-
-      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-      /* ── Smooth scroll ──────────────────────────────────────────────
-         Lenis eases the wheel; touch is left native so phones keep the
-         momentum their OS gives them. Off entirely for reduced motion. */
-      function initScroll() {
-        if (reduced) return;
-
-        const lenis = new Lenis({
-          lerp: 0.085,
-          wheelMultiplier: 1,
-          smoothWheel: true,
-          syncTouch: false,
-        });
-
-        let frame = 0;
-        const raf = (time: number) => {
-          lenis.raf(time);
-          frame = requestAnimationFrame(raf);
+      const root = document.documentElement;
+      const themeButton = document.querySelector<HTMLButtonElement>("[data-theme-toggle]");
+      if (themeButton) {
+        const sync = () => {
+          const dark = root.dataset.theme === "dark";
+          themeButton.setAttribute("aria-pressed", String(dark));
+          const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+          if (meta) meta.content = dark ? "#151719" : "#fafaf8";
         };
-        frame = requestAnimationFrame(raf);
-
-        // Pause the loop while the tab is hidden
-        document.addEventListener("visibilitychange", () => {
-          if (document.hidden) {
-            cancelAnimationFrame(frame);
-          } else {
-            frame = requestAnimationFrame(raf);
-          }
-        });
-
-        // The full-screen menu locks the page; Lenis must stop with it
-        document.addEventListener("chronicle:scroll-lock", (e: Event) => {
-          const detail = (e as CustomEvent<{ locked: boolean }>).detail;
-          detail?.locked ? lenis.stop() : lenis.start();
-        });
-      }
-
-      /* ── Scroll reveals ─────────────────────────────────────────── */
-      function initReveals() {
-        const targets = document.querySelectorAll<HTMLElement>("[data-reveal]:not(.in)");
-        if (!targets.length) return;
-
-        if (reduced) {
-          targets.forEach(t => t.classList.add("in"));
-          return;
-        }
-
-        const io = new IntersectionObserver(
-          entries => {
-            for (const entry of entries) {
-              if (!entry.isIntersecting) continue;
-              entry.target.classList.add("in");
-              io.unobserve(entry.target);
-            }
-          },
-          { rootMargin: "0px 0px -12% 0px", threshold: 0.08 }
-        );
-
-        targets.forEach(t => io.observe(t));
-      }
-
-      /* ── Spine progress ─────────────────────────────────────────────
-         Only rendered on the homepage, where the browser's own bar is
-         hidden. Reads window.scrollY, which Lenis keeps truthful. */
-      function initProgress() {
-        const fill = document.getElementById("rail-fill");
-        if (!fill) return;
-
-        let ticking = false;
-        const update = () => {
-          const max = document.documentElement.scrollHeight - window.innerHeight;
-          const p = max > 0 ? Math.min(window.scrollY / max, 1) : 0;
-          fill.style.setProperty("--p", String(p));
-          ticking = false;
-        };
-
-        const onScroll = () => {
-          if (ticking) return;
-          ticking = true;
-          requestAnimationFrame(update);
-        };
-
-        window.addEventListener("scroll", onScroll, { passive: true });
-        window.addEventListener("resize", onScroll, { passive: true });
-        update();
-      }
-
-      /* ── The Behelit ────────────────────────────────────────────── */
-      function initBehelit() {
-        const btn = document.getElementById("behelit");
-        const sun = document.getElementById("sun");
-        if (!btn) return;
-
-        const root = document.documentElement;
-        const sync = () => btn.setAttribute("aria-pressed", root.hasAttribute("data-eclipse") ? "true" : "false");
         sync();
-
-        btn.addEventListener("click", () => {
-          const on = root.hasAttribute("data-eclipse");
-
-          const apply = () => {
-            if (on) {
-              root.removeAttribute("data-eclipse");
-              try { localStorage.setItem("eclipse", "0"); } catch (e) {}
-            } else {
-              root.setAttribute("data-eclipse", "");
-              try { localStorage.setItem("eclipse", "1"); } catch (e) {}
-            }
-            sync();
-          };
-
-          if (reduced || !sun) { apply(); return; }
-
-          sun.classList.remove("firing");
-          void sun.offsetWidth;
-          sun.classList.add("firing");
-          window.setTimeout(apply, 560);
-          window.setTimeout(() => sun.classList.remove("firing"), 1550);
+        themeButton.hidden = false;
+        themeButton.addEventListener("click", () => {
+          const theme = root.dataset.theme === "dark" ? "light" : "dark";
+          root.dataset.theme = theme;
+          try { localStorage.setItem("theme", theme); } catch {}
+          sync();
         });
       }
-
-      /* ── Mobile menu ────────────────────────────────────────────── */
-      function initMenu() {
-        const burger = document.getElementById("burger");
-        const menu = document.getElementById("menu");
-        if (!burger || !menu) return;
-
-        const lock = (locked: boolean) =>
-          document.dispatchEvent(new CustomEvent("chronicle:scroll-lock", { detail: { locked } }));
-
-        const close = () => {
-          burger.setAttribute("aria-expanded", "false");
-          menu.classList.remove("open");
-          document.body.style.overflow = "";
-          lock(false);
-          window.setTimeout(() => { menu.hidden = true; }, 320);
-        };
-
-        burger.addEventListener("click", () => {
-          const open = burger.getAttribute("aria-expanded") === "true";
-          if (open) return close();
-          menu.hidden = false;
-          void menu.offsetWidth;
-          menu.classList.add("open");
-          burger.setAttribute("aria-expanded", "true");
-          document.body.style.overflow = "hidden";
-          lock(true);
-        });
-
-        menu.querySelectorAll("a").forEach(a => a.addEventListener("click", close));
-        document.addEventListener("keydown", e => {
-          if (e.key === "Escape" && burger.getAttribute("aria-expanded") === "true") close();
-        });
-      }
-
-      /* ── Hero: type lit by the black sun, eclipse parallax ──────── */
-      function initHero() {
-        const hero = document.querySelector<HTMLElement>("[data-hero]");
-        if (!hero || reduced) return;
-
-        let raf = 0;
-        hero.addEventListener("pointermove", e => {
-          if (raf) return;
-          raf = requestAnimationFrame(() => {
-            const r = hero.getBoundingClientRect();
-            const x = (e.clientX - r.left) / r.width - 0.5;
-            const y = (e.clientY - r.top) / r.height - 0.5;
-            hero.style.setProperty("--mx", String(x));
-            hero.style.setProperty("--my", String(y));
-            raf = 0;
-          });
-        });
-
-        hero.addEventListener("pointerleave", () => {
-          hero.style.setProperty("--mx", "0");
-          hero.style.setProperty("--my", "0");
-        });
-      }
-
-      /* ── Tongues: the greeting cycler ───────────────────────────── */
-      function initTongues() {
-        const el = document.querySelector<HTMLElement>("[data-tongues]");
-        if (!el) return;
-
-        const items = Array.from(el.querySelectorAll<HTMLElement>(".tongue"));
-        if (items.length < 2) return;
-
-        let i = 0;
-        items[0].classList.add("on");
-
-        window.setInterval(() => {
-          items[i].classList.remove("on");
-          i = (i + 1) % items.length;
-          items[i].classList.add("on");
-        }, reduced ? 4200 : 2300);
-      }
-
-      /* ── Armoury index: the panel that follows the cursor ───────── */
-      function initIndex() {
-        const list = document.querySelector<HTMLElement>("[data-index]");
-        const panel = document.querySelector<HTMLElement>("[data-index-panel]");
-        if (!list || !panel) return;
-        if (!window.matchMedia("(hover: hover) and (min-width: 900px)").matches) return;
-
-        const rows = Array.from(list.querySelectorAll<HTMLElement>("[data-row]"));
-        let raf = 0;
-        let tx = 0, ty = 0, cx = 0, cy = 0, active = false;
-
-        const loop = () => {
-          cx += (tx - cx) * 0.14;
-          cy += (ty - cy) * 0.14;
-          panel.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
-          raf = active ? requestAnimationFrame(loop) : 0;
-        };
-
-        list.addEventListener("pointermove", e => {
-          tx = e.clientX + 26;
-          ty = e.clientY - panel.offsetHeight / 2;
-          const maxX = window.innerWidth - panel.offsetWidth - 20;
-          if (tx > maxX) tx = e.clientX - panel.offsetWidth - 26;
-          ty = Math.max(80, Math.min(ty, window.innerHeight - panel.offsetHeight - 20));
-          if (!raf && active) raf = requestAnimationFrame(loop);
-        });
-
-        rows.forEach(row => {
-          row.addEventListener("pointerenter", () => {
-            const fields = panel.querySelectorAll<HTMLElement>("[data-field]");
-            fields.forEach(f => {
-              const key = f.dataset.field!;
-              f.textContent = row.dataset[key] || "";
-            });
-            const stack = panel.querySelector<HTMLElement>("[data-stack]");
-            if (stack) {
-              stack.innerHTML = "";
-              (row.dataset.stack || "").split("|").filter(Boolean).forEach(t => {
-                const span = document.createElement("span");
-                span.className = "ip-chip";
-                span.textContent = t;
-                stack.appendChild(span);
-              });
-            }
-            panel.classList.add("on");
-            active = true;
-            cx = tx; cy = ty;
-            if (!raf) raf = requestAnimationFrame(loop);
-          });
-
-          row.addEventListener("pointerleave", () => {
-            panel.classList.remove("on");
-            active = false;
-          });
-        });
-      }
-
-      /* ── Ash ────────────────────────────────────────────────────── */
-      let ashStop: (() => void) | null = null;
-
-      function initAsh() {
-        if (ashStop) { ashStop(); ashStop = null; }
-        if (reduced) return;
-
-        const canvas = document.getElementById("ash") as HTMLCanvasElement | null;
-        if (!canvas) return;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return;
-
-        let w = 0, h = 0, dpr = 1, frame = 0, running = true;
-
-        type Mote = { x: number; y: number; r: number; vy: number; vx: number; a: number; drift: number; ember: boolean };
-        let motes: Mote[] = [];
-
-        const seed = () => {
-          const count = Math.round(Math.min(46, (w * h) / 34000));
-          motes = Array.from({ length: count }, () => ({
-            x: Math.random() * w,
-            y: Math.random() * h,
-            r: Math.random() * 1.5 + 0.4,
-            vy: -(Math.random() * 0.22 + 0.05),
-            vx: (Math.random() - 0.5) * 0.1,
-            a: Math.random() * 0.4 + 0.12,
-            drift: Math.random() * Math.PI * 2,
-            ember: Math.random() < 0.18,
-          }));
-        };
-
-        const resize = () => {
-          dpr = Math.min(window.devicePixelRatio || 1, 2);
-          w = window.innerWidth;
-          h = window.innerHeight;
-          canvas.width = w * dpr;
-          canvas.height = h * dpr;
-          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-          seed();
-        };
-
-        const draw = () => {
-          if (!running) return;
-          ctx.clearRect(0, 0, w, h);
-          const hot = document.documentElement.hasAttribute("data-eclipse");
-
-          for (const m of motes) {
-            m.drift += 0.008;
-            m.y += m.vy;
-            m.x += m.vx + Math.sin(m.drift) * 0.16;
-
-            if (m.y < -8) { m.y = h + 8; m.x = Math.random() * w; }
-            if (m.x < -8) m.x = w + 8;
-            if (m.x > w + 8) m.x = -8;
-
-            ctx.beginPath();
-            ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
-            if (m.ember || hot) {
-              const pulse = 0.6 + Math.sin(m.drift * 2) * 0.4;
-              ctx.fillStyle = `rgba(${hot ? "255,90,55" : "207,53,32"}, ${m.a * pulse})`;
-            } else {
-              ctx.fillStyle = `rgba(236, 228, 212, ${m.a * 0.5})`;
-            }
-            ctx.fill();
+      document.querySelectorAll<HTMLButtonElement>("[data-copy]").forEach(button => {
+        const status = button.parentElement?.querySelector<HTMLElement>('[role="status"]');
+        if (!status) return;
+        button.hidden = false;
+        button.addEventListener("click", async () => {
+          const email = button.dataset.copy;
+          if (!email) return;
+          button.disabled = true;
+          status.textContent = "";
+          try {
+            await navigator.clipboard.writeText(email);
+            status.textContent = "Email address copied.";
+          } catch {
+            status.textContent = "Could not copy. Select the email address and copy it.";
+          } finally {
+            button.disabled = false;
           }
-
-          frame = requestAnimationFrame(draw);
-        };
-
-        const onVisibility = () => {
-          if (document.hidden) {
-            running = false;
-            cancelAnimationFrame(frame);
-          } else if (!running) {
-            running = true;
-            frame = requestAnimationFrame(draw);
-          }
-        };
-
-        resize();
-        frame = requestAnimationFrame(draw);
-        window.addEventListener("resize", resize, { passive: true });
-        document.addEventListener("visibilitychange", onVisibility);
-
-        ashStop = () => {
-          running = false;
-          cancelAnimationFrame(frame);
-          window.removeEventListener("resize", resize);
-          document.removeEventListener("visibilitychange", onVisibility);
-        };
-      }
-
-      function init() {
-        initScroll();
-        initReveals();
-        initProgress();
-        initBehelit();
-        initMenu();
-        initHero();
-        initTongues();
-        initIndex();
-        initAsh();
-      }
-
-      init();
+        });
+      });
     </script>
   </body>
 </html>
