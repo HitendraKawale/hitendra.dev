@@ -4,7 +4,7 @@
 
 The current site presents Hitendra's AI engineering work through a Berserk-themed design. The new version should make his work and qualifications easier to assess, retain restrained interaction, and preserve the old version separately.
 
-Status: approved and implemented on `redesign/professional`. The user authorized committing and pushing the professional and archive branches. Production release remains unapproved; verification limitations and review gates are recorded below.
+Status: release authorized by the user. The separate archive is public; the professional version is being published to `hitendra.dev`. Verification limitations remain recorded below.
 
 Execution: use the `executing-plans` skill and complete each phase with its verification checkpoint. This document contains both the design and implementation plan. Branch commit/push was requested after implementation; merging into `main` and changing production still require separate permission.
 
@@ -245,9 +245,9 @@ Checkpoint: local implementation verified and ready for user review, with any un
 
 ### 4. Publish only when separately authorized
 
-- [ ] Create the archive Vercel app from `deploy/chronicle`, record its assigned URL, and update only that branch's `site`. Verify public access and canonicals.
-- [ ] Add the verified archive URL to the professional profile/footer and verify the outgoing link.
-- [ ] Obtain release approval before committing, pushing, merging to `main`, or changing the production domain. Keep the original snapshot available for rollback.
+- [x] Create the archive Vercel app from `deploy/chronicle`, record its assigned URL, and update only that branch's `site`. Verify public access and canonicals.
+- [x] Add the verified archive URL to the professional profile/footer and verify the outgoing link.
+- [x] Obtain release approval before committing, pushing, merging to `main`, or changing the production domain. Keep the original snapshot available for rollback.
 - [ ] After authorized release, verify both the custom domain and archive URL and report their exact addresses.
 
 ## Verification
@@ -301,7 +301,10 @@ Capture desktop/mobile home, projects, a real post, contact, and both theme stat
 
 - Step 17 remains partially complete: full physical touch interaction and actual browser-chrome 200% zoom were not verified. Responsive viewport checks and a 720px zoom-equivalent layout check passed. Not all third-party project URLs were fetched. Additional audit coverage can be run before release.
 - Step 18: no `plannotator` CLI is on PATH and no code-review tool is exposed to this agent. The installed Pi extension documents `/plannotator-review`; invoke it from a Pi session opened in the professional worktree. Do not substitute chat approval for that review.
-- Steps 19–22: the user authorized pushing the professional and preserved archive branches, not merging into `main`. Archive Vercel setup, archive footer link, and production release remain pending separate authorization and account access. No Vercel CLI is on PATH. The footer intentionally omits an unverified archive URL.
+- The user subsequently requested making the site live and completed Vercel login. Release to `main` is authorized. Vercel CLI 59.15.0 runs through npx without a global install.
+- Archive live: `https://hitendra-chronicle.vercel.app`, independent Vercel project `hitendra-chronicle`. Its source is `deploy/chronicle` at `3b07b79`, with only an archive canonical change from the original. Git auto-deploy is intentionally disconnected to keep future main pushes from replacing the archive.
+- Archive verification: home, projects, blog, contact, quick profile, and the SAGA post return HTTP 200 anonymously and canonicalize to the archive host. `archive-live.png` records the original design in the public app.
+- The professional footer now includes Previous design through `profile.archive`. The static checker asserts that link on every generated page. Public verification of the new custom-domain deployment follows the release push.
 
 ## Not doing
 

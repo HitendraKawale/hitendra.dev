@@ -15,7 +15,7 @@ No lint command or test framework is installed. The static checker verifies rout
 
 `https://hitendra.dev` is hosted on Vercel. Pushes to `main` deploy automatically. Commit, push, and deployment require explicit permission.
 
-The original Chronicle design is preserved at `dcc0afe9ba5fa5ae1bd90fbfd866bf87b12cb2cc` on `archive/chronicle`. Professional work belongs on `redesign/professional`. A separate public archive deployment is planned but not yet configured. Add its footer link only after verifying the real URL.
+The original Chronicle design is preserved at `dcc0afe9ba5fa5ae1bd90fbfd866bf87b12cb2cc` on `archive/chronicle`. Its separate public Vercel app is `https://hitendra-chronicle.vercel.app`. Source on `deploy/chronicle` changes only the canonical URL. The archive project has no automatic Git deployment connection, so future main pushes cannot overwrite it. The professional footer links to it through `profile.archive`.
 
 `site` in `astro.config.mjs` stays `https://hitendra.dev` on the professional branch. Both canonical and social URLs resolve against it. Archive-only metadata changes belong on a separate `deploy/chronicle` branch, never on the professional branch.
 

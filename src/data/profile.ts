@@ -10,6 +10,7 @@ export const profile = {
     "AI engineer building LLM systems, RAG pipelines, and 3D vision tools. MSc Artificial Intelligence, University of Surrey.",
 
   // Links
+  archive: "https://hitendra-chronicle.vercel.app",
   github: "https://github.com/HitendraKawale",
   codeberg: "https://codeberg.org/HitendraKawale",
   linkedin: "https://linkedin.com/in/hitendra-kawale",

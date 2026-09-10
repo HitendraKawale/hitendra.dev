@@ -12,6 +12,7 @@ for (const file of pages) {
   assert.match(html, /href="\/contact"/, `${file}: contact navigation`);
   assert.doesNotMatch(html, /id="(?:ash|sun)"|data-eclipse/, `${file}: legacy presentation`);
   assert.match(html, /href="#content"/, `${file}: skip link`);
+  assert.match(html, /href="https:\/\/hitendra-chronicle\.vercel\.app"/, `${file}: public archive link`);
 }
 for (const route of ['index.html', 'projects/index.html', 'blog/index.html', 'contact/index.html', 'tldr/index.html', '404.html']) {
   assert(existsSync(`dist/${route}`), `Missing ${route}`);
