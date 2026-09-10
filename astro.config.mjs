@@ -18,6 +18,6 @@ const localAdmin = () => ({
 
 export default defineConfig({
   output: 'static',
-  site: 'https://hitendra.dev',
+  site: 'https://hitendra-chronicle.vercel.app',
   integrations: [localAdmin()],
 });
