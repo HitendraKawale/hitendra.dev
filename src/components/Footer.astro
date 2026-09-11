@@ -3,7 +3,7 @@ import { profile } from "../data/profile";
 ---
 <footer>
   <div class="wrap footer-inner">
-    <span>© {new Date().getFullYear()} {profile.name}</span>
+    <span>© {new Date().getFullYear()} {profile.name} <span class="han" lang="zh-Hans">{profile.nameHan}</span></span>
     <ul aria-label="Elsewhere">
       <li><a href={`mailto:${profile.email}`}>Email</a></li>
       <li><a href={profile.github}>GitHub</a></li>

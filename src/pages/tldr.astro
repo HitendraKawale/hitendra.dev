@@ -5,44 +5,116 @@ import { projects } from "../data/projects";
 const featured = projects.filter(project => project.featured).slice(0, 3);
 ---
 <BaseLayout title={`Quick profile | ${profile.name}`} description={profile.cardBio}>
-  <header class="page-head"><p class="meta">Quick profile</p><h1>{profile.name}</h1><p>{profile.bio}</p></header>
-  <section class="section" aria-labelledby="overview-title">
-    <h2 id="overview-title">At a glance</h2>
-    <dl>
-      <div><dt>Role</dt><dd>{profile.title}</dd></div>
-      <div><dt>Education</dt><dd>MSc Artificial Intelligence, University of Surrey</dd></div>
-      <div><dt>Location</dt><dd>United Kingdom</dd></div>
-      <div><dt>Availability</dt><dd>{profile.availability}</dd></div>
-    </dl>
-  </section>
-  <section class="section" aria-labelledby="work-title">
-    <header class="section-head"><h2 id="work-title">Selected work</h2><a href="/projects">All projects ({projects.length})</a></header>
-    <ul class="work">{featured.map(project => <li><h3>{project.href ? <a href={project.href}>{project.title}</a> : project.title}</h3><p class="muted">{project.subtitle}</p></li>)}</ul>
-  </section>
-  <section class="section" aria-labelledby="contact-title">
-    <h2 id="contact-title">Contact and links</h2>
-    <div class="actions">
-      <a href={`mailto:${profile.email}`}>{profile.email}</a>
-      <button type="button" data-copy={profile.email} hidden>Copy email</button>
-      <span class="copy-status" role="status"></span>
+  <header class="page-head">
+    <p class="meta">Quick profile</p>
+    <h1>{profile.name} <span class="han" lang="zh-Hans">{profile.nameHan}</span></h1>
+    <p class="byline meta">{profile.namePinyin} · {profile.title} · United Kingdom</p>
+    <p>{profile.bio}</p>
+  </header>
+
+  <div class="profile-grid">
+    <div class="column">
+      <section class="block" aria-labelledby="work-title">
+        <header class="section-head"><h2 id="work-title">Selected work</h2><a href="/projects">All projects ({projects.length})</a></header>
+        <ul class="work">
+          {featured.map(project => (
+            <li>
+              <h3>{project.href ? <a href={project.href}>{project.title}</a> : project.title}</h3>
+              <p class="muted">{project.subtitle}</p>
+              <ul class="stack">{project.stack.slice(0, 6).map(item => <li>{item}</li>)}</ul>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section class="block" aria-labelledby="skills-title">
+        <h2 id="skills-title">Technical skills</h2>
+        <ul class="stack skills">{profile.skills.map(skill => <li>{skill}</li>)}</ul>
+      </section>
+
+      <section class="block" aria-labelledby="languages-title">
+        <h2 id="languages-title">Languages</h2>
+        <dl class="languages">
+          {profile.languages.map(language => <div><dt>{language.name}</dt><dd>{language.level}</dd></div>)}
+        </dl>
+      </section>
     </div>
-    <div class="actions">
-      <a href={profile.resume} download="Hitendra-Kawale-Resume.pdf">Resume</a>
-      <a href={profile.github}>GitHub</a>
-      {profile.linkedin && <a href={profile.linkedin}>LinkedIn</a>}
-      {profile.codeberg && <a href={profile.codeberg}>Codeberg</a>}
-    </div>
-  </section>
+
+    <aside class="column" aria-label="Profile details">
+      <section class="block" aria-labelledby="overview-title">
+        <h2 id="overview-title">At a glance</h2>
+        <dl>
+          <div><dt>Role</dt><dd>{profile.title}</dd></div>
+          <div><dt>Education</dt><dd>MSc Artificial Intelligence, University of Surrey</dd></div>
+          <div><dt>Location</dt><dd>United Kingdom</dd></div>
+          <div><dt>Availability</dt><dd>{profile.availability}</dd></div>
+        </dl>
+      </section>
+
+      <section class="block" aria-labelledby="contact-title">
+        <h2 id="contact-title">Contact and links</h2>
+        <div class="actions">
+          <a href={`mailto:${profile.email}`}>{profile.email}</a>
+          <button type="button" data-copy={profile.email} hidden>Copy email</button>
+          <span class="copy-status" role="status"></span>
+        </div>
+        <div class="actions links">
+          <a href={profile.resume} download="Hitendra-Kawale-Resume.pdf">Resume</a>
+          <a href={profile.github}>GitHub</a>
+          {profile.linkedin && <a href={profile.linkedin}>LinkedIn</a>}
+          {profile.codeberg && <a href={profile.codeberg}>Codeberg</a>}
+        </div>
+      </section>
+    </aside>
+  </div>
 </BaseLayout>
 <style>
+  .page-head { padding-bottom: 32px; }
   .page-head .meta { margin: 0 0 12px; }
-  dl { margin-top: 20px; }
-  dl div { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 12px; padding-block: 12px; border-bottom: 1px solid var(--border); }
-  dt { color: var(--muted); }
+  .page-head h1 { max-width: none; }
+  .page-head .han { font-size: .55em; color: var(--muted); white-space: nowrap; }
+  .byline { margin-top: 14px; }
+  .page-head > p:last-child { margin-top: 12px; }
+
+  .profile-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 300px); gap: 0 64px; padding-bottom: 72px; }
+  .column { min-width: 0; }
+  .block { padding-block: 36px; border-top: 1px solid var(--border); }
+  .block h2 { font-size: 1.125rem; }
+  .block > h2 + * { margin-top: 20px; }
+
+  .work { list-style: none; padding: 0; margin-top: 4px; }
+  .work > li + li { margin-top: 28px; }
+  .work h3 { font-size: 1.0625rem; }
+  .work h3 a { display: inline-flex; align-items: center; min-height: 44px; }
+  .work > li > p { margin-top: 2px; font-size: .9375rem; }
+  .work .stack { margin-top: 10px; }
+  .stack li::after { content: "·"; margin-left: 14px; color: var(--border); }
+  .stack li:last-child::after { content: none; }
+
+  dl div { display: grid; gap: 2px; padding-block: 10px; border-bottom: 1px solid var(--border); font-size: .9375rem; }
+  dl div:last-child { border-bottom: 0; }
+  dt { color: var(--muted); font-size: .8125rem; text-transform: uppercase; letter-spacing: .06em; }
   dd { margin: 0; }
-  .work { list-style: none; padding: 0; }
-  .work li { padding-block: 20px; border-top: 1px solid var(--border); }
-  .work a { display: inline-flex; min-height: 44px; align-items: center; }
-  .copy-status { flex-basis: 100%; }
-  @media (max-width: 480px) { dl div { grid-template-columns: 1fr; gap: 4px; } }
+
+  .languages { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 40px; }
+  .languages div { grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 4px 12px; }
+  .languages div:nth-last-child(2) { border-bottom: 0; }
+  .languages dt { text-transform: none; letter-spacing: 0; font-size: .9375rem; color: var(--text); }
+  .languages dd { color: var(--muted); font-size: .8125rem; }
+
+  .actions { margin-top: 16px; }
+  .actions.links { gap: 8px 20px; font-size: .9375rem; }
+  .skills { line-height: 2; }
+
+  @media (max-width: 860px) {
+    .profile-grid { grid-template-columns: 1fr; gap: 0; padding-bottom: 48px; }
+  }
+  @media (max-width: 520px) {
+    .languages { grid-template-columns: 1fr; }
+    .languages div:nth-last-child(2) { border-bottom: 1px solid var(--border); }
+  }
+  @media print {
+    .profile-grid { gap: 0 40px; padding-bottom: 0; }
+    .block { padding-block: 18px; }
+  }
 </style>

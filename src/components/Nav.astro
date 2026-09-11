@@ -9,7 +9,7 @@ const path = Astro.url.pathname.replace(/\/$/, "");
 ---
 <header>
   <nav class="wrap" aria-label="Primary">
-    <a class="identity" href="/" aria-current={path === "" ? "page" : undefined}>{profile.name}</a>
+    <a class="identity" href="/" aria-current={path === "" ? "page" : undefined}>{profile.name}<span class="han" lang="zh-Hans">{profile.nameHan}</span></a>
     <ul>
       {links.map(link => (
         <li><a href={link.href} aria-current={path === link.href ? "page" : path.startsWith(`${link.href}/`) ? "location" : undefined}>{link.label}</a></li>
@@ -21,7 +21,8 @@ const path = Astro.url.pathname.replace(/\/$/, "");
 <style>
   header { border-bottom: 1px solid var(--border); }
   nav { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 28px; padding-block: 18px; }
-  .identity { color: var(--text); font-weight: 600; letter-spacing: -.025em; margin-right: auto; }
+  .identity { color: var(--text); font-weight: 600; letter-spacing: -.025em; margin-right: auto; gap: 10px; }
+  .identity .han { color: var(--muted); font-size: .9375rem; font-weight: 400; letter-spacing: .06em; }
   a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; }
   ul { display: flex; gap: 24px; list-style: none; padding: 0; font-size: .875rem; }
   ul a { color: var(--muted); }
@@ -30,5 +31,6 @@ const path = Astro.url.pathname.replace(/\/$/, "");
   @media (max-width: 600px) {
     nav { gap: 4px 12px; padding-block: 10px; }
     ul { order: 3; width: 100%; gap: 28px; }
+    .identity { gap: 8px; }
   }
 </style>

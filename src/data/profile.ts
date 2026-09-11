@@ -1,5 +1,8 @@
 export const profile = {
   name: "Hitendra Kawale",
+  // Chinese name, carried over from the personal archive site. 高 is the "tall" gao.
+  nameHan: "高泽贤",
+  namePinyin: "Gāo Zéxián",
   initials: "HK",
   title: "AI Engineer",
   bio: "AI engineer building LLM systems, RAG pipelines, and 3D vision tools.",
