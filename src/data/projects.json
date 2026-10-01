@@ -1,9 +1,9 @@
 [
   {
     "title": "Log Guardian",
-    "subtitle": "AI-powered log anomaly-detection platform",
-    "description": "Microservice platform that ingests application logs and scores each one for anomalies with a Random Forest model (ROC-AUC 0.89), a versioned model registry, and a human-feedback retraining loop with score-drift detection. Synchronous REST and Kafka-backed streaming share one scoring pipeline, with OpenTelemetry traces (through Kafka), Prometheus/Alertmanager, and Grafana dashboards. 49 tests, CI, k6 load-tested at ~220 req/s (p95 ~24ms), shipping via Docker Compose and Kubernetes.",
-    "stack": ["Python", "FastAPI", "Kafka", "PostgreSQL", "OpenTelemetry", "Prometheus", "Grafana", "Kubernetes"],
+    "subtitle": "Evidence-based security log review with optional AI",
+    "description": "Built a review tool that links gateway requests to explicit authentication outcomes and produces cited facts without a model. Optional AI selects bounded evidence and allowed explanations; invalid selections are rejected without changing the factual baseline. Tested five browser-driven scenarios against a locally instrumented OWASP Juice Shop, checking 182 records across reviews representing 154 unique source records. Missing authentication logs stayed unknown despite HTTP success. Includes immutable case snapshots, separate review/execution permissions, and preserved failure evidence. Alpha prototype, not a validated attack detector or production security service.",
+    "stack": ["Python", "FastAPI", "PostgreSQL", "SQLite", "OpenAI API", "Playwright", "Docker"],
     "status": "Built",
     "href": "https://github.com/HitendraKawale/log-guardian",
     "featured": true
