@@ -69,11 +69,11 @@ const featured = projects.filter(project => project.featured).slice(0, 3);
   </div>
 </BaseLayout>
 <style>
-  .page-head { padding-bottom: 32px; }
-  .page-head .meta { margin: 0 0 12px; }
+  .page-head { padding-bottom: 44px; }
+  .page-head .meta { margin: 0 0 20px; }
   .page-head h1 { max-width: none; }
   .page-head .han { font-size: .55em; color: var(--muted); white-space: nowrap; }
-  .byline { margin-top: 14px; }
+  .byline { margin-top: 20px; }
   .page-head > p:last-child { margin-top: 12px; }
 
   .profile-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 300px); gap: 0 64px; padding-bottom: 72px; }
@@ -114,6 +114,7 @@ const featured = projects.filter(project => project.featured).slice(0, 3);
     .languages div:nth-last-child(2) { border-bottom: 1px solid var(--border); }
   }
   @media print {
+    .page-head h1 { font-size: 2rem; }
     .profile-grid { gap: 0 40px; padding-bottom: 0; }
     .block { padding-block: 18px; }
   }

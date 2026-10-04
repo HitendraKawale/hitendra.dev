@@ -11,13 +11,19 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft))
 ---
 <BaseLayout title={`${profile.name} | ${profile.title}`} description={profile.bio} cardDescription={profile.cardBio}>
   <section class="intro section">
-    <h1>{profile.bio}</h1>
-    <p class="qualification">MSc Artificial Intelligence, University of Surrey. I focus on backend systems, evaluation, and deployment.</p>
-    <p class="availability">{profile.availability}</p>
-    <div class="actions">
-      <a class="button" href={profile.resume} download="Hitendra-Kawale-Resume.pdf">Resume</a>
-      <a href={profile.github}>GitHub</a>
-      <a href="/contact">Contact</a>
+    <div class="intro-main">
+      <p class="intro-name">{profile.name}</p>
+      <h1>I build AI systems that hold up outside the demo.</h1>
+    </div>
+    <div class="intro-aside">
+      <p class="qualification">MSc Artificial Intelligence, University of Surrey. I focus on backend systems, evaluation, and deployment.</p>
+      <p class="focus">LLM systems, retrieval, and 3D vision.</p>
+      <p class="availability">{profile.availability}</p>
+      <div class="actions">
+        <a class="button" href={profile.resume} download="Hitendra-Kawale-Resume.pdf">Resume</a>
+        <a href={profile.github}>GitHub</a>
+        <a href="/contact">Contact</a>
+      </div>
     </div>
   </section>
   <section class="section" aria-labelledby="work-title">
@@ -44,14 +50,18 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft))
   </section>
 </BaseLayout>
 <style>
-  .intro { max-width: 860px; }
-  h1 { max-width: 25ch; }
-  .qualification { max-width: 59ch; color: var(--muted); margin-top: 24px; font-size: 1.0625rem; }
-  .availability { margin-top: 24px; color: var(--accent); font-size: .875rem; }
+  .intro { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(230px, 1fr); align-items: end; gap: 32px 56px; padding-block: 112px 104px; }
+  .intro-name { margin-bottom: 24px; color: var(--accent); font-size: .9375rem; }
+  h1 { max-width: 11ch; font-size: clamp(3rem, 6vw, 5.5rem); line-height: 1.02; letter-spacing: -.065em; }
+  .intro-aside { padding-bottom: 6px; }
+  .qualification { color: var(--text); font-size: 1.125rem; line-height: 1.5; }
+  .focus { margin-top: 20px; color: var(--muted); }
+  .availability { margin-top: 28px; color: var(--accent); font-size: .875rem; }
   .about { display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 24px; }
   .about p + p { margin-top: 20px; }
   .languages { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 28px; margin-block: 28px; font-size: .875rem; }
   .languages div { display: flex; flex-wrap: wrap; gap: 4px 12px; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
   dd { margin: 0; color: var(--muted); }
-  @media (max-width: 640px) { .about { grid-template-columns: 1fr; } .languages { grid-template-columns: 1fr; } }
+  @media (max-width: 760px) { .intro { grid-template-columns: 1fr; padding-block: 64px; } h1 { max-width: 13ch; } }
+  @media (max-width: 640px) { .intro { gap: 24px; padding-block: 48px 56px; } .intro-name { margin-bottom: 16px; } .availability { margin-top: 16px; } .focus { margin-top: 12px; } .about { grid-template-columns: 1fr; } .languages { grid-template-columns: 1fr; } }
 </style>

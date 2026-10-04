@@ -13,9 +13,11 @@ const date = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", 
   </div>
 </article>
 <style>
-  .entry { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 24px; padding-block: 28px; border-top: 1px solid var(--border); }
-  time { padding-top: 8px; }
-  h3 a { display: inline-block; padding-block: 8px; min-height: 44px; }
+  .entry { display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 32px; padding-block: 36px; border-top: 1px solid var(--border); }
+  time { padding-top: 10px; }
+  h3 { font-size: 1.35rem; }
+  h3 a { display: inline-block; padding-block: 8px; min-height: 44px; color: var(--text); text-decoration: none; }
+  h3 a:hover { color: var(--accent); text-decoration: underline; }
   p { margin-top: 8px; max-width: 65ch; color: var(--muted); }
   .stack { margin-top: 12px; }
   @media (max-width: 600px) { .entry { grid-template-columns: 1fr; gap: 8px; } }

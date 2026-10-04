@@ -11,8 +11,8 @@ evidence.mkdir(parents=True, exist_ok=True)
 session = "hitendra-professional-check"
 
 
-def browser(*args):
-    result = subprocess.run(["agent-browser", "--session", session, *args], text=True, capture_output=True)
+def browser(*args, session_name=session):
+    result = subprocess.run(["agent-browser", "--session", session_name, *args], text=True, capture_output=True)
     if result.returncode:
         raise AssertionError(f"{args}: {result.stdout}\n{result.stderr}")
     return result.stdout
@@ -30,11 +30,12 @@ def open_page(route):
 
 try:
     open_page("/")
+    browser("set", "media", "light")
     browser("storage", "local", "clear")
     browser("reload")
-    check("document.documentElement.dataset.theme !== 'dark'", "first visit is light")
+    check("document.documentElement.dataset.theme !== 'dark' && document.querySelector('meta[name=theme-color]').content === '#f1f5f3'", "first visit is light with matching browser chrome")
     browser("find", "role", "button", "click", "--name", "Dark mode")
-    check("document.documentElement.dataset.theme === 'dark' && document.querySelector('[data-theme-toggle]').getAttribute('aria-pressed') === 'true'", "theme changes and announces state")
+    check("document.documentElement.dataset.theme === 'dark' && document.querySelector('[data-theme-toggle]').getAttribute('aria-pressed') === 'true' && document.querySelector('meta[name=theme-color]').content === '#10262c'", "theme changes and updates browser chrome")
     open_page("/projects")
     check("document.documentElement.dataset.theme === 'dark'", "theme persists across navigation")
     browser("reload")
@@ -72,10 +73,11 @@ try:
         open_page(route)
         check("document.querySelectorAll('main').length === 1 && document.querySelectorAll('h1').length === 1", route + " landmarks")
         check("!document.querySelector('a[href=\"undefined\"],a[href=\"#\"]')", route + " links")
+        check("!document.querySelector('canvas') && !performance.getEntriesByType('resource').some(e => e.name.includes('three.module'))", route + " has no 3D scene or Three.js request")
         for width, height in [(320, 844), (390, 844), (768, 1024), (1440, 900)]:
             browser("set", "viewport", str(width), str(height))
             check("document.documentElement.scrollWidth <= innerWidth", f"{route} no overflow at {width}px")
-        if route in ["/", "/projects", "/contact", "/blog/saga-scribble-segmentation"]:
+        if route in ["/", "/projects", "/blog", "/contact", "/tldr", "/blog/saga-scribble-segmentation"]:
             label = route.strip("/").replace("/", "-") or "home"
             for width, height, size in [(1440, 900, "desktop"), (390, 844, "mobile")]:
                 browser("set", "viewport", str(width), str(height))
@@ -84,9 +86,12 @@ try:
                     browser("screenshot", str(evidence / f"{label}-{size}-{theme}.png"))
     open_page("/not-a-real-page")
     check("document.querySelector('h1').textContent.includes('Page not found')", "404 recovery")
+    check("!document.querySelector('canvas') && !performance.getEntriesByType('resource').some(e => e.name.includes('three.module'))", "404 has no Three.js request")
     open_page("/")
     browser("set", "viewport", "390", "844")
     check("document.querySelector('.intro .actions').getBoundingClientRect().bottom <= innerHeight", "intro contact links above fold on mobile")
+    browser("set", "viewport", "320", "844")
+    check("document.querySelector('.intro .actions').getBoundingClientRect().bottom <= innerHeight", "actions appear in first screen at 320px")
     browser("press", "Tab")
     check("document.activeElement.textContent.includes('Skip to content')", "skip link first in keyboard order")
     browser("press", "Enter")

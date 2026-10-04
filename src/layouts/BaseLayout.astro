@@ -33,7 +33,7 @@ const card = cardDescription ?? (description.length > 150
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Hitendra Kawale, AI Engineer. LLM systems, RAG pipelines, and 3D vision. hitendra.dev" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="theme-color" content="#fafaf8" />
+    <meta name="theme-color" content="#f1f5f3" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="alternate icon" href="/favicon.ico" />
     <title>{title}</title>
@@ -41,7 +41,7 @@ const card = cardDescription ?? (description.length > 150
       try {
         if (localStorage.getItem("theme") === "dark") {
           document.documentElement.dataset.theme = "dark";
-          document.querySelector('meta[name="theme-color"]').content = "#151719";
+          document.querySelector('meta[name="theme-color"]').content = "#10262c";
         }
       } catch {}
     </script>
@@ -59,7 +59,7 @@ const card = cardDescription ?? (description.length > 150
           const dark = root.dataset.theme === "dark";
           themeButton.setAttribute("aria-pressed", String(dark));
           const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
-          if (meta) meta.content = dark ? "#151719" : "#fafaf8";
+          if (meta) meta.content = dark ? "#10262c" : "#f1f5f3";
         };
         sync();
         themeButton.hidden = false;

@@ -19,11 +19,12 @@ const { project, expanded = false } = Astro.props;
   {project.href && <a class="source" href={project.href}>View project<span class="sr-only">: {project.title}</span></a>}
 </article>
 <style>
-  .project { padding-block: 28px; border-top: 1px solid var(--border); }
+  .project { padding-block: 36px; border-top: 1px solid var(--border); }
   header { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px 20px; }
-  .subtitle { margin-top: 8px; color: var(--muted); }
+  h3 { font-size: clamp(1.25rem, 2vw, 1.6rem); }
+  .subtitle { margin-top: 10px; color: var(--muted); font-size: 1.0625rem; }
   .stack { margin-top: 12px; }
-  .description { margin-top: 16px; max-width: 78ch; }
+  .description { margin-top: 20px; max-width: 72ch; }
   details { margin-top: 12px; }
   summary { cursor: pointer; color: var(--accent); min-height: 44px; padding-block: 8px; width: fit-content; }
   .source { display: inline-flex; align-items: center; min-height: 44px; margin-top: 8px; font-size: .875rem; }
