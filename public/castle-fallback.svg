@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-label="Stylized tiered castle silhouette">
+  <g fill="none" stroke-linejoin="round">
+    <path d="M0 654Q260 610 470 656T1200 652" stroke="#8d9c94" stroke-width="2" opacity=".55"/>
+    <path d="M454 630 744 630 780 688 420 688Z" fill="#888e82"/>
+    <path d="M464 618 735 618 744 630 454 630Z" fill="#535f5a"/>
+    <path d="M484 463H716V618H484Z" fill="#e5e2d5" stroke="#374647" stroke-width="5"/>
+    <path d="M470 485H730M506 463V618M694 463V618" stroke="#59635c" stroke-width="6"/>
+    <path d="M534 525h38v45h-38zm94 0h38v45h-38z" fill="#273f43"/>
+    <path d="M440 460 508 420H692L760 460 733 477H467Z" fill="#283b3e" stroke="#283b3e" stroke-width="5"/>
+    <path d="M504 432H696V450H504Z" fill="#58635d"/>
+    <path d="M508 310H692V420H508Z" fill="#e5e2d5" stroke="#374647" stroke-width="5"/>
+    <path d="M494 341H706M525 310V420M675 310V420" stroke="#59635c" stroke-width="5"/>
+    <path d="M545 350h30v35h-30zm80 0h30v35h-30z" fill="#273f43"/>
+    <path d="M472 306 525 272H675L728 306 699 323H501Z" fill="#283b3e" stroke="#283b3e" stroke-width="5"/>
+    <path d="M523 280H677V296H523Z" fill="#58635d"/>
+    <path d="M533 195H667V272H533Z" fill="#e5e2d5" stroke="#374647" stroke-width="5"/>
+    <path d="M521 219H679M547 195V272M653 195V272" stroke="#59635c" stroke-width="5"/>
+    <path d="M568 228h24v27h-24zm40 0h24v27h-24z" fill="#273f43"/>
+    <path d="M503 191 544 162H656L697 191 671 205H529Z" fill="#283b3e" stroke="#283b3e" stroke-width="5"/>
+    <path d="M542 169H658V181H542Z" fill="#58635d"/>
+    <path d="M582 142V162M600 134V162M618 142V162" stroke="#374647" stroke-width="5"/>
+  </g>
+</svg>

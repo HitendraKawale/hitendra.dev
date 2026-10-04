@@ -1,0 +1,176 @@
+---
+interface Props { variant: "hero" | "accent"; view?: "stone" | "roof"; }
+const { variant, view = "stone" } = Astro.props;
+---
+<div class="castle-scene" data-castle={variant} data-view={view} aria-hidden="true">
+  <img src="/castle-fallback.svg" alt="" loading={variant === "hero" ? "eager" : "lazy"} />
+  <canvas hidden></canvas>
+</div>
+
+<style>
+  .castle-scene { position: relative; width: 100%; height: 180px; overflow: hidden; background: var(--castle-sky, #d8ded9); }
+  .castle-scene[data-castle="hero"] { height: 100%; min-height: 320px; }
+  img, canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  img { object-fit: cover; }
+  .castle-scene[data-castle="hero"] img { left: auto; right: 0; width: 65%; object-fit: contain; }
+  :global([data-theme="dark"]) .castle-scene img { filter: invert(.35) brightness(1.1); }
+  .ready img { display: none; }
+  @media (max-width: 640px) { .castle-scene[data-castle="hero"] { min-height: 190px; } }
+</style>
+
+<script>
+  for (const field of document.querySelectorAll<HTMLElement>(".castle-scene")) {
+    const canvas = field.querySelector("canvas");
+    const context = canvas?.getContext("webgl2");
+    if (!canvas || !context) continue;
+
+    void import("three").then(THREE => {
+      const resources = new Set<{ dispose(): void }>();
+      const material = (color: string) => {
+        const result = new THREE.MeshStandardMaterial({ color, roughness: 1, side: THREE.DoubleSide });
+        resources.add(result);
+        return result;
+      };
+      const stone = material("#aaa595");
+      const plaster = material("#e5e2d5");
+      const roof = material("#283b3e");
+      const beam = material("#59635c");
+      const windowMat = material("#273f43");
+      const groundMat = material("#b9c4b9");
+      const scene = new THREE.Scene();
+      const castle = new THREE.Group();
+      scene.add(castle);
+      scene.add(new THREE.AmbientLight(0xffffff, 1.5));
+      const sun = new THREE.DirectionalLight(0xfff4df, 2.2);
+      sun.position.set(-4, 7, 5);
+      scene.add(sun);
+
+      const box = (w: number, h: number, d: number, x: number, y: number, z: number, paint: InstanceType<typeof THREE.MeshStandardMaterial>) => {
+        const geometry = new THREE.BoxGeometry(w, h, d);
+        resources.add(geometry);
+        const mesh = new THREE.Mesh(geometry, paint);
+        mesh.position.set(x, y, z);
+        castle.add(mesh);
+      };
+      const eaves = (w: number, d: number, y: number) => {
+        const outerW = w / 2 + .2;
+        const outerD = d / 2 + .2;
+        const topW = w * .28;
+        const topD = d * .28;
+        const bottom = y;
+        const top = y + .28;
+        const vertices: number[] = [];
+        const quad = (a: number[], b: number[], c: number[], d: number[]) => vertices.push(...a, ...b, ...c, ...a, ...c, ...d);
+        quad([-outerW, bottom, outerD], [outerW, bottom, outerD], [topW, top, topD], [-topW, top, topD]);
+        quad([outerW, bottom, -outerD], [-outerW, bottom, -outerD], [-topW, top, -topD], [topW, top, -topD]);
+        quad([-outerW, bottom, -outerD], [-outerW, bottom, outerD], [-topW, top, topD], [-topW, top, -topD]);
+        quad([outerW, bottom, outerD], [outerW, bottom, -outerD], [topW, top, -topD], [topW, top, topD]);
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
+        geometry.computeVertexNormals();
+        resources.add(geometry);
+        castle.add(new THREE.Mesh(geometry, roof));
+        box(w + .4, .07, d + .4, 0, y, 0, roof);
+      };
+
+      box(3.1, .48, 2.55, 0, -1.56, 0, stone);
+      for (const [w, d, bottom, height] of [[2.6, 2.15, -1.32, .88], [2.04, 1.72, -.14, .63], [1.5, 1.28, .77, .48]]) {
+        const middle = bottom + height / 2;
+        box(w, height, d, 0, middle, 0, plaster);
+        box(w + .06, .06, d + .06, 0, bottom + height - .04, 0, beam);
+        for (const side of [-1, 1]) {
+          box(.045, height, .045, side * (w / 2 - .05), middle, d / 2 + .025, beam);
+          box(w * .12, height * .35, .025, side * w * .22, middle, d / 2 + .03, windowMat);
+          box(.025, height * .3, d * .13, w / 2 + .03, middle, side * d * .22, windowMat);
+        }
+        eaves(w, d, bottom + height + .02);
+      }
+      box(.07, .18, .07, 0, 1.64, 0, beam);
+      const ground = new THREE.Mesh(new THREE.PlaneGeometry(100, 100), groundMat);
+      resources.add(ground.geometry);
+      ground.rotation.x = -Math.PI / 2;
+      ground.position.y = -1.81;
+      scene.add(ground);
+
+      const isHero = field.dataset.castle === "hero";
+      const camera = new THREE.PerspectiveCamera(isHero ? 36 : 42, 1, .1, 50);
+      camera.position.set(field.dataset.view === "roof" ? 4.7 : 3.4, field.dataset.view === "roof" ? 3.3 : 2.1, isHero ? 7.1 : 8.2);
+      camera.lookAt(0, -.1, 0);
+      const renderer = new THREE.WebGLRenderer({ canvas, context, antialias: true });
+      renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+      const motion = matchMedia("(prefers-reduced-motion: reduce)");
+      let frame = 0;
+      let visible = true;
+      let target = 0;
+      const draw = () => renderer.render(scene, camera);
+      const resize = () => {
+        const width = Math.max(field.clientWidth, 1);
+        const height = Math.max(field.clientHeight, 1);
+        camera.aspect = width / height;
+        castle.position.x = isHero && width > 640 ? 2.1 : 0;
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height, false);
+        draw();
+      };
+      const colors = () => {
+        const dark = document.documentElement.dataset.theme === "dark";
+        const css = getComputedStyle(field);
+        renderer.setClearColor(css.getPropertyValue("--castle-sky").trim() || (dark ? "#18323a" : "#d8ded9"));
+        stone.color.set(dark ? "#778882" : "#aaa595");
+        plaster.color.set(dark ? "#c1c8ba" : "#e5e2d5");
+        roof.color.set(dark ? "#6d8584" : "#283b3e");
+        beam.color.set(dark ? "#8caaa4" : "#59635c");
+        groundMat.color.set(dark ? "#304947" : "#b9c4b9");
+        draw();
+      };
+      const animate = () => {
+        castle.rotation.y += (target - castle.rotation.y) * .025;
+        draw();
+        frame = requestAnimationFrame(animate);
+      };
+      const pointer = (event: PointerEvent) => {
+        const rect = field.getBoundingClientRect();
+        target = ((event.clientX - rect.left) / rect.width - .5) * .3;
+      };
+      const still = () => { target = 0; };
+      const sync = () => {
+        cancelAnimationFrame(frame);
+        frame = 0;
+        field.removeEventListener("pointermove", pointer);
+        field.removeEventListener("pointerleave", still);
+        if (isHero && visible && !document.hidden && !motion.matches) {
+          field.addEventListener("pointermove", pointer);
+          field.addEventListener("pointerleave", still);
+          frame = requestAnimationFrame(animate);
+        } else {
+          castle.rotation.y = 0;
+          draw();
+        }
+      };
+      const size = new ResizeObserver(resize);
+      const theme = new MutationObserver(colors);
+      const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; sync(); });
+      resize();
+      colors();
+      canvas.hidden = false;
+      field.classList.add("ready");
+      size.observe(field);
+      theme.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+      observer.observe(field);
+      motion.addEventListener("change", sync);
+      document.addEventListener("visibilitychange", sync);
+      sync();
+      window.addEventListener("pagehide", (event) => {
+        if (event.persisted) return;
+        cancelAnimationFrame(frame);
+        size.disconnect();
+        theme.disconnect();
+        observer.disconnect();
+        motion.removeEventListener("change", sync);
+        document.removeEventListener("visibilitychange", sync);
+        resources.forEach(resource => resource.dispose());
+        renderer.dispose();
+      });
+    }).catch(() => { canvas.hidden = true; field.classList.remove("ready"); });
+  }
+</script>

@@ -1,12 +1,13 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ProjectCard from "../components/ProjectCard.astro";
+import CastleScene from "../components/CastleScene.astro";
 import { projects } from "../data/projects";
 import { profile } from "../data/profile";
 const groups = ["Built", "In Progress", "Research"];
 ---
 <BaseLayout title={`Projects | ${profile.name}`} description="AI engineering projects by Hitendra Kawale: LLM platforms, retrieval systems, agents, and 3D vision research.">
-  <header class="page-head"><h1>Projects</h1><p>Systems I've built and research I've worked on. Each entry includes the tools, implementation details, and available source code.</p></header>
+  <header class="page-head with-castle"><div><h1>Projects</h1><p>Systems I've built and research I've worked on. Each entry includes the tools, implementation details, and available source code.</p></div><CastleScene variant="accent" view="stone" /></header>
   {projects.length === 0 && <section class="section"><p>No projects published yet.</p></section>}
   {groups.map(status => {
     const list = projects.filter(project => project.status === status);

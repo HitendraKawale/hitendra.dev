@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import BlogCard from "../../components/BlogCard.astro";
+import CastleScene from "../../components/CastleScene.astro";
 import { getCollection } from "astro:content";
 import { profile } from "../../data/profile";
 const posts = (await getCollection("blog", ({ data }) => !data.draft))
@@ -8,7 +9,7 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft))
 const years = [...new Set(posts.map(post => post.data.date.getUTCFullYear()))];
 ---
 <BaseLayout title={`Writing | ${profile.name}`} description="Notes on AI engineering, 3D vision research, learning languages, and life by Hitendra Kawale.">
-  <header class="page-head"><h1>Writing</h1><p>Technical notes, research lessons, and personal reflections.</p></header>
+  <header class="page-head with-castle"><div><h1>Writing</h1><p>Technical notes, research lessons, and personal reflections.</p></div><CastleScene variant="accent" view="roof" /></header>
   {posts.length === 0 && <section class="section"><p>No posts published yet.</p></section>}
   {years.map(year => <section class="section"><header class="section-head"><h2>{year}</h2></header>{posts.filter(post => post.data.date.getUTCFullYear() === year).map(post => <BlogCard post={post} />)}</section>)}
 </BaseLayout>

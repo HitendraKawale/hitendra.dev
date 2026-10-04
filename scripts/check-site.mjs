@@ -13,6 +13,9 @@ for (const file of pages) {
   assert.doesNotMatch(html, /id="(?:ash|sun)"|data-eclipse/, `${file}: legacy presentation`);
   assert.match(html, /href="#content"/, `${file}: skip link`);
   assert.match(html, /href="https:\/\/hitendra-chronicle\.vercel\.app"/, `${file}: public archive link`);
+  if (!['index.html', 'projects/index.html', 'blog/index.html'].includes(file)) {
+    assert.doesNotMatch(html, /<canvas\b|castle-fallback\.svg|CastleScene\.astro/, `${file}: no castle scene`);
+  }
 }
 for (const route of ['index.html', 'projects/index.html', 'blog/index.html', 'contact/index.html', 'tldr/index.html', '404.html']) {
   assert(existsSync(`dist/${route}`), `Missing ${route}`);
@@ -29,6 +32,13 @@ const projects = JSON.parse(readFileSync('src/data/projects.json', 'utf8'));
 const home = readFileSync('dist/index.html', 'utf8');
 assert.match(home, /class="intro-main"/, 'Home needs the main introduction');
 assert.match(home, /class="intro-aside"/, 'Home needs the credentials aside');
+for (const [route, variant] of [['index.html', 'hero'], ['projects/index.html', 'accent'], ['blog/index.html', 'accent']]) {
+  const html = readFileSync(`dist/${route}`, 'utf8');
+  assert.match(html, new RegExp(`data-castle="${variant}"`), `${route}: missing ${variant} castle`);
+  assert.equal((html.match(/<canvas\b/g) ?? []).length, 1, `${route}: one 3D canvas`);
+  assert.match(html, /src="\/castle-fallback\.svg"/, `${route}: static castle fallback`);
+  assert.match(html, /aria-hidden="true"/, `${route}: castle is decorative`);
+}
 assert.match(home, /I build AI systems that hold up outside the demo\./, 'Home headline must be HTML');
 assert.match(home, /<div class="actions"[^>]*>[^<]*<a[^>]*>Resume<\/a>[^<]*<a[^>]*>GitHub<\/a>[^<]*<a href="\/contact"[^>]*>Contact<\/a>/, 'Home contact action must be HTML');
 const listing = readFileSync('dist/projects/index.html', 'utf8');
